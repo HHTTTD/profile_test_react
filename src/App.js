@@ -12,6 +12,8 @@ import ModeSwitch from './components/mode_switch';
 import DownloadButton from './components/download_buttons';
 import IconCloudDemo from './components/IconCloudDemo';
 import DecryptedText from './components/DecryptedText/DecryptedText';
+import TranslateSwitch from './components/translate_switch';
+import FluidEffectsActive from './components/Fluid_Effects_Active';
 
 // Theme Context
 const ThemeContext = createContext();
@@ -80,7 +82,7 @@ const translations = {
     contact: "ติดต่อ",
     
     // Hero section
-    name: "จอห์น โด",
+    name: "สิทธิศักดิ์ ศรีสุข",
     heroSubtitle: "สร้างสรรค์",
     heroWords: ["โค้ดดิ้ง", "ดีไซน์", "นวัตกรรม", "โซลูชัน", "ประสบการณ์"],
     heroDescription: "หลงใหลในการสร้าง ผลิตภัณฑ์ดิจิทัล ที่ใช้งานง่าย ขยายตัวได้ และสร้างผลกระทบ ที่แก้ปัญหาในโลกจริงและสร้างแรงบันดาลใจให้ผู้ใช้",
@@ -153,7 +155,7 @@ const translations = {
     contact: "Contact",
     
     // Hero section
-    name: "John Doe",
+    name: "Sitthisak Srisuk",
     heroSubtitle: "Creative",
     heroWords: ["coding", "design", "innovation", "solutions", "experiences"],
     heroDescription: "Passionate about building intuitive, scalable, and impactful digital products that solve real-world problems and inspire users.",
@@ -259,22 +261,6 @@ const useTranslation = () => {
     throw new Error('useTranslation must be used within a TranslationProvider');
   }
   return context;
-};
-
-// Language Toggle Button
-const LanguageToggle = () => {
-  const { language, toggleLanguage } = useTranslation();
-
-  return (
-    <button 
-      onClick={toggleLanguage}
-      className="nav-button flex items-center gap-2 p-2 bg-theme-card hover:bg-theme-secondary rounded-lg transition-all duration-300 text-theme-primary font-medium text-sm min-w-[65px] hover:scale-105"
-      title={`Switch to ${language === 'th' ? 'English' : 'ไทย'}`}
-    >
-      <span className="text-lg">{language === 'th' ? '🇹🇭' : '🇺🇸'}</span>
-      <span className="font-semibold">{language === 'th' ? 'TH' : 'EN'}</span>
-    </button>
-  );
 };
 
 // About Texts Component with DecryptedText and gradient highlights
@@ -749,6 +735,25 @@ class SplashCursorErrorBoundary extends React.Component {
   }
 }
 
+// Fluid Effects Active Wrapper Component
+const FluidEffectsActiveWrapper = ({ splashEnabled, setSplashEnabled }) => {
+  const handleToggle = useCallback(() => {
+    setSplashEnabled(!splashEnabled);
+  }, [splashEnabled, setSplashEnabled]);
+
+  return (
+    <div 
+      className="transform scale-75 origin-bottom-right"
+      style={{ transformOrigin: 'bottom right' }}
+    >
+      <FluidEffectsActive 
+        checked={splashEnabled}
+        onChange={handleToggle}
+      />
+    </div>
+  );
+};
+
 // Scroll Progress Bar (Throttled)
 const ScrollProgress = () => {
   const { theme } = useTheme();
@@ -1084,7 +1089,7 @@ const StatsCounter = React.memo(({ end, label, icon: Icon, delay = 0 }) => {
 // Main App Component
 const ProfileWebsite = () => {
   const { theme } = useTheme();
-  const { t } = useTranslation();
+  const { t, language, toggleLanguage } = useTranslation();
   const classes = getThemeClasses(theme);
   
   const [isLoading, setIsLoading] = useState(true);
@@ -1270,12 +1275,13 @@ const ProfileWebsite = () => {
         </SplashCursorErrorBoundary>
       )}
 
-      {/* Effect Status Indicator - Clean version */}
-      {splashEnabled && (
-        <div className="status-indicator fixed bottom-4 right-4 z-50 border rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 bg-blue-600/20 border-blue-400/50 text-blue-400">
-          🌊 Fluid Effects Active
-        </div>
-      )}
+      {/* Fluid Effects Control - Interactive Toggle */}
+      <div className="fixed bottom-4 right-4 z-50">
+        <FluidEffectsActiveWrapper 
+          splashEnabled={splashEnabled}
+          setSplashEnabled={setSplashEnabled}
+        />
+      </div>
 
       {/* Enhanced Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-500 ${
@@ -1284,7 +1290,7 @@ const ProfileWebsite = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className={`text-2xl font-bold ${classes.text.primary}`}>
-              {t('name')}
+              Cocoa
             </div>
             
             <div className="hidden md:flex space-x-1">
@@ -1316,17 +1322,10 @@ const ProfileWebsite = () => {
                 {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
               </button>
               
-              <button 
-                onClick={() => setSplashEnabled(!splashEnabled)}
-                className={`nav-button p-2 ${classes.bg.cardHover} rounded-lg transition-colors ${
-                  splashEnabled ? 'bg-blue-600/20 text-blue-400' : classes.text.primary
-                }`}
-                title={`${splashEnabled ? 'Disable' : 'Enable'} Splash Effects (improves performance)`}
-              >
-                <Zap size={20} />
-              </button>
-              
-              <LanguageToggle />
+              <TranslateSwitch 
+                language={language}
+                onToggle={toggleLanguage}
+              />
               
               <ThemeToggle />
               
@@ -1413,9 +1412,9 @@ const ProfileWebsite = () => {
           {/* Social Links */}
           <div className="flex justify-center gap-6">
             {[
-              { icon: Github, href: "https://github.com", label: "GitHub" },
-              { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-              { icon: Mail, href: "mailto:john@example.com", label: "Email" }
+              { icon: Github, href: "https://github.com/sitthisaksrisuk", label: "GitHub" },
+              { icon: Linkedin, href: "https://linkedin.com/in/sitthisak-srisuk", label: "LinkedIn" },
+              { icon: Mail, href: "mailto:sitthisak@example.com", label: "Email" }
             ].map((social, index) => (
               <a
                 key={index}
@@ -1658,10 +1657,10 @@ const ProfileWebsite = () => {
                 
                 <div className="space-y-6">
                   {[
-                    { icon: Mail, labelKey: 'email', label: "Email", value: "john@example.com", href: "mailto:john@example.com" },
-                    { icon: Phone, labelKey: 'phone', label: "Phone", value: "+66 123 456 789", href: "tel:+66123456789" },
-                    { icon: Linkedin, labelKey: 'linkedin', label: "LinkedIn", value: "linkedin.com/in/johndoe", href: "https://linkedin.com/in/johndoe" },
-                    { icon: Github, labelKey: 'github', label: "GitHub", value: "github.com/johndoe", href: "https://github.com/johndoe" }
+                    { icon: Mail, labelKey: 'email', label: "Email", value: "sitthisak@example.com", href: "mailto:sitthisak@example.com" },
+                    { icon: Phone, labelKey: 'phone', label: "Phone", value: "+66 638 783 500", href: "tel:+66638783500" },
+                                { icon: Linkedin, labelKey: 'linkedin', label: "LinkedIn", value: "linkedin.com/in/sitthisak-srisuk", href: "https://linkedin.com/in/sitthisak-srisuk" },
+            { icon: Github, labelKey: 'github', label: "GitHub", value: "github.com/sitthisaksrisuk", href: "https://github.com/sitthisaksrisuk" }
                   ].map((contact, index) => (
                     <a 
                       key={index}
@@ -1756,9 +1755,9 @@ const ProfileWebsite = () => {
             
             <div className="flex justify-center gap-6">
               {[
-                { icon: Github, href: "https://github.com/johndoe", label: "GitHub" },
-                { icon: Linkedin, href: "https://linkedin.com/in/johndoe", label: "LinkedIn" },
-                { icon: Mail, href: "mailto:john@example.com", label: "Email" },
+                            { icon: Github, href: "https://github.com/sitthisaksrisuk", label: "GitHub" },
+            { icon: Linkedin, href: "https://linkedin.com/in/sitthisak-srisuk", label: "LinkedIn" },
+                { icon: Mail, href: "mailto:sitthisak@example.com", label: "Email" },
                 { icon: Phone, href: "tel:+66123456789", label: "Phone" }
               ].map((social, index) => (
                 <a
