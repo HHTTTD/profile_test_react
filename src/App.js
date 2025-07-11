@@ -1382,7 +1382,7 @@ const ProfileWebsite = () => {
             <Ballpit 
               className="w-full h-full"
               followCursor={false}
-              count={100}
+              count={200}
               colors={[0x8b5cf6, 0x6366f1, 0x000000, 0xffffff, 0x6b7280]}  // Purple, Purple-Blue, Black, White, Gray
               minSize={0.4}
               maxSize={1.0}
