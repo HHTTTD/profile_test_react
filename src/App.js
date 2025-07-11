@@ -658,6 +658,17 @@ const getThemeClasses = (theme) => ({
     accent: 'border-theme-accent'
   },
 
+  // Shadow classes
+  shadow: {
+    sm: 'shadow-theme-sm',
+    md: 'shadow-theme-md',
+    lg: 'shadow-theme-lg',
+    xl: 'shadow-theme-xl',
+    '2xl': 'shadow-theme-2xl',
+    card: 'shadow-theme-card',
+    cardHover: 'hover:shadow-theme-card-hover'
+  },
+
   // Component specific
   nav: {
     bg: 'bg-theme-overlay',
@@ -797,6 +808,8 @@ const ScrollProgress = () => {
 // 3D Skill Card with Advanced Animations
 const AdvancedSkillCard = React.memo(({ skill, level, icon: Icon, delay = 0 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const classes = getThemeClasses(theme);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -863,22 +876,22 @@ const AdvancedSkillCard = React.memo(({ skill, level, icon: Icon, delay = 0 }) =
       onMouseMove={handleMouseMove}
       style={{ transformStyle: 'preserve-3d' }}
     >
-      <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-6 border border-white/20 hover:border-indigo-400/50 transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/20 relative overflow-hidden">
+      <div className={`${classes.bg.card} rounded-2xl p-6 border ${classes.border.primary} hover:${classes.border.accent} transition-all duration-500 ${classes.shadow.card} ${classes.shadow.cardHover} relative overflow-hidden backdrop-blur-sm`}>
         
         {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className={`absolute inset-0 ${theme === 'light' ? 'bg-gradient-to-br from-indigo-500/5 to-purple-500/5' : 'bg-gradient-to-br from-indigo-500/10 to-purple-500/10'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
         
         {/* Skill icon and name */}
         <div className="flex items-center gap-3 mb-4 relative z-10">
-          <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
+          <div className={`p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
             <Icon size={24} className="text-white" />
           </div>
-          <h3 className="text-white font-bold text-lg">{skill}</h3>
+          <h3 className={`${classes.text.primary} font-bold text-lg`}>{skill}</h3>
         </div>
         
         {/* Progress bar container */}
         <div className="relative mb-3">
-          <div className="w-full bg-gray-700/50 rounded-full h-3 overflow-hidden">
+          <div className={`w-full ${theme === 'light' ? 'bg-gray-200/60' : 'bg-gray-700/50'} rounded-full h-3 overflow-hidden`}>
             <div 
               className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 h-full rounded-full transition-all duration-1000 ease-out relative"
               style={{ width: `${progress}%` }}
@@ -889,7 +902,7 @@ const AdvancedSkillCard = React.memo(({ skill, level, icon: Icon, delay = 0 }) =
           
           {/* Floating percentage */}
           <div 
-            className="absolute -top-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-lg text-sm font-bold shadow-lg transition-all duration-1000"
+            className={`absolute -top-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-2 py-1 rounded-lg text-sm font-bold transition-all duration-1000 ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}
             style={{ left: `${Math.max(0, Math.min(progress - 10, 85))}%` }}
           >
             {progress}%
@@ -897,15 +910,15 @@ const AdvancedSkillCard = React.memo(({ skill, level, icon: Icon, delay = 0 }) =
         </div>
         
         {/* Skill level text */}
-        <div className="text-indigo-300 text-sm font-medium">
+        <div className={`${classes.text.accent} text-sm font-medium`}>
           {getSkillLevel(progress)}
         </div>
         
         {/* Hover effects */}
         {isHovered && (
           <>
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-2xl animate-pulse" />
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl opacity-20 blur animate-pulse" />
+            <div className={`absolute inset-0 ${theme === 'light' ? 'bg-gradient-to-br from-indigo-500/10 to-purple-500/10' : 'bg-gradient-to-br from-indigo-500/20 to-purple-500/20'} rounded-2xl animate-pulse`} />
+            <div className={`absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl ${theme === 'light' ? 'opacity-10' : 'opacity-20'} blur animate-pulse`} />
           </>
         )}
       </div>
@@ -1029,6 +1042,8 @@ const EnhancedProjectCard = React.memo(({ project, delay = 0 }) => {
 
 // Stats Counter Component
 const StatsCounter = React.memo(({ end, label, icon: Icon, delay = 0 }) => {
+  const { theme } = useTheme();
+  const classes = getThemeClasses(theme);
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -1073,14 +1088,14 @@ const StatsCounter = React.memo(({ end, label, icon: Icon, delay = 0 }) => {
   
   return (
     <div id={`stats-${label}`} className="text-center group">
-      <div className="bg-theme-card rounded-2xl p-6 border border-theme-primary hover:border-theme-accent transition-all duration-300 hover:scale-105">
+      <div className={`${classes.bg.card} rounded-2xl p-6 border ${classes.border.primary} hover:${classes.border.accent} transition-all duration-300 hover:scale-105 ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm`}>
         <div className="flex justify-center mb-3">
-          <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+          <div className={`p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl group-hover:scale-110 transition-transform duration-300 ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
             <Icon size={24} className="text-white" />
           </div>
         </div>
-        <div className="text-3xl font-bold text-theme-primary mb-2">{count}+</div>
-        <div className="text-theme-accent font-medium">{label}</div>
+        <div className={`text-3xl font-bold ${classes.text.primary} mb-2`}>{count}+</div>
+        <div className={`${classes.text.accent} font-medium`}>{label}</div>
       </div>
     </div>
   );
@@ -1456,8 +1471,8 @@ const ProfileWebsite = () => {
               <AboutTexts />
               
               <div className="grid grid-cols-2 gap-6">
-                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105`}>
-                  <div className="p-2 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg">
+                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105 ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm border ${classes.border.primary} hover:${classes.border.accent}`}>
+                  <div className={`p-2 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-lg ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
                     <MapPin size={20} className="text-white" />
                   </div>
                   <div>
@@ -1466,8 +1481,8 @@ const ProfileWebsite = () => {
                   </div>
                 </div>
                 
-                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105`}>
-                  <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-lg">
+                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105 ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm border ${classes.border.primary} hover:${classes.border.accent}`}>
+                  <div className={`p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-lg ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
                     <Calendar size={20} className="text-white" />
                   </div>
                   <div>
@@ -1476,8 +1491,8 @@ const ProfileWebsite = () => {
                   </div>
                 </div>
                 
-                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105`}>
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg">
+                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105 ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm border ${classes.border.primary} hover:${classes.border.accent}`}>
+                  <div className={`p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
                     <BookOpen size={20} className="text-white" />
                   </div>
                   <div>
@@ -1486,8 +1501,8 @@ const ProfileWebsite = () => {
                   </div>
                 </div>
                 
-                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105`}>
-                  <div className="p-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg">
+                <div className={`flex items-center gap-3 p-5 ${classes.bg.card} rounded-xl transition-all duration-300 hover:scale-105 ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm border ${classes.border.primary} hover:${classes.border.accent}`}>
+                  <div className={`p-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
                     <Coffee size={20} className="text-white" />
                   </div>
                   <div>
@@ -1641,7 +1656,7 @@ const ProfileWebsite = () => {
             </ScrollFloat>
           </div>
           
-          <div className={`${classes.bg.card} rounded-3xl p-8 md:p-12 shadow-2xl`}>
+          <div className={`${classes.bg.card} rounded-3xl p-8 md:p-12 ${classes.shadow.xl} border ${classes.border.primary} backdrop-blur-sm`}>
             <div className="grid lg:grid-cols-2 gap-12">
               <div className="space-y-8">
                 <div>
@@ -1665,9 +1680,9 @@ const ProfileWebsite = () => {
                     <a 
                       key={index}
                       href={contact.href}
-                      className={`flex items-center gap-4 p-4 ${classes.bg.glass} ${classes.bg.cardHover} rounded-xl transition-all duration-300 group border ${classes.border.secondary} hover:border-indigo-400/50`}
+                      className={`flex items-center gap-4 p-4 ${classes.bg.glass} ${classes.bg.cardHover} rounded-xl transition-all duration-300 group border ${classes.border.secondary} hover:${classes.border.accent} ${classes.shadow.card} ${classes.shadow.cardHover} backdrop-blur-sm`}
                     >
-                      <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg group-hover:scale-110 transition-transform">
+                      <div className={`p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg group-hover:scale-110 transition-transform ${theme === 'light' ? 'shadow-lg' : 'shadow-md'}`}>
                         <contact.icon size={20} className="text-white" />
                       </div>
                       <div>
@@ -1680,7 +1695,7 @@ const ProfileWebsite = () => {
                   ))}
                 </div>
                 
-                <div className={`bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-xl p-6 border ${classes.border.accent}`}>
+                <div className={`${theme === 'light' ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10' : 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20'} rounded-xl p-6 border ${classes.border.accent} ${classes.shadow.card} backdrop-blur-sm`}>
                   <h4 className="font-semibold text-indigo-400 mb-2">{t('quickResponse')}</h4>
                   <p className={`text-sm ${classes.text.secondary}`}>
                     {t('quickResponseDesc')}
@@ -1693,34 +1708,34 @@ const ProfileWebsite = () => {
                   <input 
                     type="text" 
                     placeholder={t('firstName')}
-                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:border-indigo-400 focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20`}
+                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
                   />
                   <input 
                     type="text" 
                     placeholder={t('lastName')}
-                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:border-indigo-400 focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20`}
+                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
                   />
                 </div>
                 
                 <input 
                   type="email" 
                   placeholder={t('email')}
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:border-indigo-400 focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20`}
+                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
                 />
                 
                 <input 
                   type="text" 
                   placeholder={t('subject')}
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:border-indigo-400 focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20`}
+                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
                 />
                 
                 <textarea 
                   placeholder={t('projectMessage')}
                   rows="6"
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:border-indigo-400 focus:outline-none ${classes.text.primary} placeholder-gray-400 resize-none transition-colors focus:ring-2 focus:ring-indigo-400/20`}
+                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 resize-none transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
                 />
                 
-                <button className="primary-button w-full group px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-white shadow-lg hover:shadow-xl">
+                <button className={`primary-button w-full group px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-white ${classes.shadow.lg} hover:${classes.shadow.xl}`}>
                   {t('sendMessage')}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
