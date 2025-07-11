@@ -15,6 +15,7 @@ import IconCloudDemo from './components/IconCloudDemo';
 import DecryptedText from './components/DecryptedText/DecryptedText';
 import TranslateSwitch from './components/translate_switch';
 import FluidEffectsActive from './components/Fluid_Effects_Active';
+import ModelViewer from './components/ModelViewer/ModelViewer';
 
 // Theme Context
 const ThemeContext = createContext();
@@ -138,6 +139,15 @@ const translations = {
     subject: "หัวข้อ",
     projectMessage: "บอกเล่าเกี่ยวกับโปรเจคของคุณ...",
     sendMessage: "ส่งข้อความ",
+    messageSent: "ส่งข้อความสำเร็จ! ✅",
+    messageFailed: "ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง",
+    sending: "กำลังส่ง...",
+    firstNameRequired: "กรุณากรอกชื่อจริง",
+    lastNameRequired: "กรุณากรอกนามสกุล",
+    emailRequired: "กรุณากรอกอีเมล",
+    emailInvalid: "กรุณากรอกอีเมลให้ถูกต้อง",
+    subjectRequired: "กรุณากรอกหัวข้อ",
+    messageRequired: "กรุณากรอกข้อความ",
     privacyNote: "การส่งข้อความนี้แสดงว่าคุณยินยอมตาม นโยบายความเป็นส่วนตัว และ ข้อกำหนดการให้บริการ ของเรา",
     
     // Footer
@@ -211,6 +221,15 @@ const translations = {
     subject: "Subject",
     projectMessage: "Tell me about your project...",
     sendMessage: "Send Message",
+    messageSent: "Message sent successfully! ✅",
+    messageFailed: "Failed to send message. Please try again.",
+    sending: "Sending...",
+    firstNameRequired: "First name is required",
+    lastNameRequired: "Last name is required",
+    emailRequired: "Email is required",
+    emailInvalid: "Please enter a valid email",
+    subjectRequired: "Subject is required",
+    messageRequired: "Message is required",
     privacyNote: "By sending this message, you agree to our privacy policy and terms of service.",
     
     // Footer
@@ -696,6 +715,213 @@ const ThemeToggle = () => {
   );
 };
 
+// 3D CSS Model as Reliable Fallback
+const CSS3DModel = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div className="flex items-center justify-center w-full h-full">
+      {/* 3D CSS Laptop */}
+      <div 
+        className="relative cursor-pointer transform transition-transform duration-300 hover:scale-110" 
+        style={{ perspective: '1000px' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div 
+          className="relative w-40 h-24"
+          style={{
+            transformStyle: 'preserve-3d',
+            animation: isHovered ? 'none' : 'rotate360 8s linear infinite',
+            transform: isHovered ? 'rotateY(20deg) rotateX(-10deg)' : 'none'
+          }}
+        >
+          {/* Laptop Screen */}
+          <div 
+            className="absolute w-40 h-24 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-gray-600 flex items-center justify-center shadow-xl"
+            style={{
+              transform: 'rotateX(-15deg) translateZ(3px)'
+            }}
+          >
+            {/* Screen Content */}
+            <div className={`w-36 h-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded flex items-center justify-center text-white text-sm font-bold transition-all duration-500 ${isHovered ? 'animate-pulse' : ''}`}>
+              <div className="text-center">
+                <div className="text-2xl mb-1">💻</div>
+                <div className="text-xs tracking-wider">FULL STACK</div>
+                <div className="text-xs opacity-75">DEVELOPER</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Laptop Base */}
+          <div 
+            className="absolute w-40 h-24 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg border border-gray-600 shadow-lg"
+            style={{
+              transform: 'rotateX(75deg) translateZ(-10px) translateY(12px)'
+            }}
+          >
+            {/* Keyboard */}
+            <div className="grid grid-cols-10 gap-1 p-3 h-full">
+              {[...Array(30)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`bg-gray-600 rounded-sm transition-all duration-300 ${
+                    isHovered ? 'bg-indigo-500 shadow-lg' : 'opacity-70'
+                  }`}
+                  style={{
+                    animationDelay: `${i * 50}ms`
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Side Panel */}
+          <div 
+            className="absolute w-24 h-24 bg-gradient-to-b from-gray-800 to-gray-900 opacity-40 rounded"
+            style={{
+              transform: 'rotateY(90deg) translateZ(20px) translateX(-12px)'
+            }}
+          />
+          
+          {/* Light Reflection */}
+          <div 
+            className={`absolute w-40 h-24 bg-gradient-to-tr from-white to-transparent opacity-10 rounded-lg pointer-events-none transition-opacity duration-500 ${isHovered ? 'opacity-20' : ''}`}
+            style={{
+              transform: 'rotateX(-15deg) translateZ(4px)'
+            }}
+          />
+        </div>
+        
+        {/* Floating Particles */}
+        {isHovered && (
+          <div className="absolute inset-0 pointer-events-none">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-indigo-400 rounded-full animate-ping opacity-75"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
+                  animationDelay: `${i * 200}ms`,
+                  animationDuration: '1s'
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// 3D Model Viewer with Your ToyCar Model
+const ModelViewerWithFallback = () => {
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [modelUrl] = useState("/models/ToyCar.glb");
+  const [viewerSize, setViewerSize] = useState({ width: 320, height: 320 });
+
+  useEffect(() => {
+    // Set responsive size based on screen width
+    const updateSize = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 768) {
+        // Desktop: 500x500
+        setViewerSize({ width: 500, height: 500 });
+      } else if (screenWidth >= 640) {
+        // Tablet: 384x384
+        setViewerSize({ width: 384, height: 384 });
+      } else {
+        // Mobile: 320x320
+        setViewerSize({ width: 320, height: 320 });
+      }
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  useEffect(() => {
+    // Check if model file exists
+    fetch(modelUrl, { method: 'HEAD' })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Model file not found');
+        }
+        console.log('Model file found successfully');
+      })
+      .catch(error => {
+        console.error('Model file check failed:', error);
+        setHasError(true);
+        setIsLoading(false);
+      });
+
+    // Timeout fallback
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        console.warn('Model loading timeout after 20 seconds - falling back to CSS 3D');
+        setHasError(true);
+        setIsLoading(false);
+      }
+    }, 20000); // Increase to 20 seconds for 5.8MB file
+
+    return () => clearTimeout(timer);
+  }, [modelUrl, isLoading]);
+
+  const handleModelLoaded = () => {
+    console.log('🚗 ToyCar model loaded successfully!');
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  const handleError = (error) => {
+    console.error('Model loading error:', error);
+    setIsLoading(false);
+    setHasError(true);
+  };
+
+  // Show CSS fallback if error
+  if (hasError) {
+    return (
+      <div className="text-center">
+        <CSS3DModel />
+        <div className="mt-2 text-xs text-gray-500">
+          CSS 3D Fallback (ToyCar.glb not loaded)
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-full">
+      {/* Loading State */}
+      {isLoading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent z-10">
+          <div className="text-4xl animate-spin mb-2">🚗</div>
+          <div className="text-sm text-gray-400 mb-1">Loading ToyCar...</div>
+          <div className="text-xs text-gray-500">5.8MB - Please wait 10-20 seconds</div>
+          <div className="mt-2 w-32 h-1 bg-gray-700 rounded overflow-hidden">
+            <div className="h-full bg-indigo-500 animate-pulse"></div>
+          </div>
+        </div>
+      )}
+      
+      {/* ModelViewer */}
+      <div className={`w-full h-full transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        <ModelViewer
+          url={modelUrl}
+          width={viewerSize.width}
+          height={viewerSize.height}
+          onModelLoaded={handleModelLoaded}
+          onError={handleError}
+        />
+      </div>
+    </div>
+  );
+};
+
 // Enhanced Error Boundary with recovery
 class SplashCursorErrorBoundary extends React.Component {
   constructor(props) {
@@ -1115,6 +1341,124 @@ const ProfileWebsite = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [splashEnabled, setSplashEnabled] = useState(true);
 
+  // 🔧 Contact Form State Management
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  
+  const [formSubmitting, setFormSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+
+  // Load form data from localStorage when component mounts
+  useEffect(() => {
+    const savedFormData = localStorage.getItem('contactFormData');
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+      } catch (error) {
+        console.error('Error loading form data:', error);
+      }
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('contactFormData', JSON.stringify(formData));
+  }, [formData]);
+
+  // Handle form input changes
+  const handleFormChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (formErrors[field]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [field]: ''
+      }));
+    }
+  };
+
+  // Form validation
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.firstName.trim()) {
+      errors.firstName = t('firstNameRequired') || 'First name is required';
+    }
+    
+    if (!formData.lastName.trim()) {
+      errors.lastName = t('lastNameRequired') || 'Last name is required';
+    }
+    
+    if (!formData.email.trim()) {
+      errors.email = t('emailRequired') || 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = t('emailInvalid') || 'Please enter a valid email';
+    }
+    
+    if (!formData.subject.trim()) {
+      errors.subject = t('subjectRequired') || 'Subject is required';
+    }
+    
+    if (!formData.message.trim()) {
+      errors.message = t('messageRequired') || 'Message is required';
+    }
+    
+    return errors;
+  };
+
+  // Handle form submission
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    setFormSubmitting(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      console.log('Form submitted:', formData);
+      
+      // Show success message
+      alert(t('messageSent') || 'Message sent successfully!');
+      
+      // Clear form after submission
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+      
+      // Clear localStorage
+      localStorage.removeItem('contactFormData');
+      setFormErrors({});
+      
+    } catch (error) {
+      console.error('Form submission error:', error);
+      alert(t('messageFailed') || 'Failed to send message. Please try again.');
+    } finally {
+      setFormSubmitting(false);
+    }
+  };
+
   // Stable background color references to prevent SplashCursor re-mount
   const splashBackColorDark = useRef({ r: 0, g: 0, b: 0 });
   const splashBackColorLight = useRef({ r: 1, g: 1, b: 1 });
@@ -1392,13 +1736,13 @@ const ProfileWebsite = () => {
               ambientIntensity={0.8}
             />
           ) : (
-            <LetterGlitch 
+          <LetterGlitch 
               glitchColors={["#1e293b", "#3730a3", "#7c3aed", "#059669"]}
-              glitchSpeed={30}
-              centerVignette={false}
-              outerVignette={true}
-              smooth={true}
-            />
+            glitchSpeed={30}
+            centerVignette={false}
+            outerVignette={true}
+            smooth={true}
+          />
           )}
         </div>
         
@@ -1527,12 +1871,14 @@ const ProfileWebsite = () => {
             </div>
             
             <div className="relative">
-              <div className="relative w-96 h-96 mx-auto">
-                {/* Animated profile circle */}
+              <div className="relative w-80 h-80 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] mx-auto">
+                {/* Animated profile circle border */}
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-full animate-spin-slow" 
                      style={{ animation: 'spin 20s linear infinite' }} />
-                <div className={`absolute inset-4 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} rounded-full flex items-center justify-center`}>
-                  <div className="text-8xl">👨‍💻</div>
+                
+                {/* 3D Model Viewer with Error Handling */}
+                <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} rounded-full flex items-center justify-center overflow-hidden p-2`}>
+                  <ModelViewerWithFallback />
                 </div>
                 
                 {/* Floating tech icons */}
@@ -1544,7 +1890,7 @@ const ProfileWebsite = () => {
                 ].map((item, index) => (
                   <div 
                     key={index}
-                    className={`absolute ${item.position} text-2xl animate-bounce`}
+                    className={`absolute ${item.position} text-2xl animate-bounce z-10`}
                     style={{ animationDelay: item.delay }}
                   >
                     {item.icon}
@@ -1716,47 +2062,100 @@ const ProfileWebsite = () => {
                 </div>
               </div>
               
-              <div className="space-y-6">
+              <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
                   <input 
                     type="text" 
                     placeholder={t('firstName')}
-                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                      className={`px-4 py-3 ${classes.bg.glass} border ${formErrors.firstName ? 'border-red-500' : classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm w-full`}
+                      value={formData.firstName}
+                      onChange={(e) => handleFormChange('firstName', e.target.value)}
+                      disabled={formSubmitting}
                   />
+                    {formErrors.firstName && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.firstName}</p>
+                    )}
+                  </div>
+                  <div>
                   <input 
                     type="text" 
                     placeholder={t('lastName')}
-                    className={`px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                      className={`px-4 py-3 ${classes.bg.glass} border ${formErrors.lastName ? 'border-red-500' : classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm w-full`}
+                      value={formData.lastName}
+                      onChange={(e) => handleFormChange('lastName', e.target.value)}
+                      disabled={formSubmitting}
                   />
+                    {formErrors.lastName && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.lastName}</p>
+                    )}
+                  </div>
                 </div>
                 
+                <div>
                 <input 
                   type="email" 
                   placeholder={t('email')}
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                    className={`w-full px-4 py-3 ${classes.bg.glass} border ${formErrors.email ? 'border-red-500' : classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                    value={formData.email}
+                    onChange={(e) => handleFormChange('email', e.target.value)}
+                    disabled={formSubmitting}
                 />
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+                  )}
+                </div>
                 
+                <div>
                 <input 
                   type="text" 
                   placeholder={t('subject')}
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                    className={`w-full px-4 py-3 ${classes.bg.glass} border ${formErrors.subject ? 'border-red-500' : classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                    value={formData.subject}
+                    onChange={(e) => handleFormChange('subject', e.target.value)}
+                    disabled={formSubmitting}
                 />
+                  {formErrors.subject && (
+                    <p className="text-red-500 text-sm mt-1">{formErrors.subject}</p>
+                  )}
+                </div>
                 
+                <div>
                 <textarea 
                   placeholder={t('projectMessage')}
                   rows="6"
-                  className={`w-full px-4 py-3 ${classes.bg.glass} border ${classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 resize-none transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
-                />
+                    className={`w-full px-4 py-3 ${classes.bg.glass} border ${formErrors.message ? 'border-red-500' : classes.border.secondary} rounded-xl focus:${classes.border.accent} focus:outline-none ${classes.text.primary} placeholder-gray-400 resize-none transition-colors focus:ring-2 focus:ring-indigo-400/20 ${classes.shadow.sm} backdrop-blur-sm`}
+                    value={formData.message}
+                    onChange={(e) => handleFormChange('message', e.target.value)}
+                    disabled={formSubmitting}
+                  />
+                  {formErrors.message && (
+                    <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>
+                  )}
+                </div>
                 
-                <button className={`primary-button w-full group px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-white ${classes.shadow.lg} hover:${classes.shadow.xl}`}>
+                <button 
+                  type="submit"
+                  disabled={formSubmitting}
+                  className={`primary-button w-full group px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3 text-white ${classes.shadow.lg} hover:${classes.shadow.xl} ${formSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                >
+                  {formSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      {t('sending')}
+                    </>
+                  ) : (
+                    <>
                   {t('sendMessage')}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </button>
                 
                 <p className={`text-sm ${classes.text.tertiary} text-center`}>
                   {t('privacyNote')}
                 </p>
-              </div>
+              </form>
             </div>
           </div>
         </div>
