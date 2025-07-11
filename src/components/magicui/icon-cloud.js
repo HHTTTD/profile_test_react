@@ -256,9 +256,16 @@ export function IconCloud({ icons, images }) {
       const deltaX = e.clientX - lastMousePos.x;
       const deltaY = e.clientY - lastMousePos.y;
 
+      // ปรับทิศทางให้สอดคล้องกับการลากเมาส์:
+      // - ลากขวา = หมุนขวา 
+      // - ลากซ้าย = หมุนซ้าย  ✅ ถูกแล้ว
+      // - ลากขึ้น = หมุนขึ้น  🔄 ปรับใหม่
+      // - ลากลง = หมุนลง    🔄 ปรับใหม่
+      const sensitivity = 0.012;
+      
       rotationRef.current = {
-        x: rotationRef.current.x + deltaY * 0.008,
-        y: rotationRef.current.y + deltaX * 0.008,
+        x: rotationRef.current.x + deltaY * sensitivity,  // เปลี่ยนกลับเป็น + สำหรับขึ้น-ลง
+        y: rotationRef.current.y - deltaX * sensitivity,  // เก็บไว้เหมือนเดิมสำหรับซ้าย-ขวา
       };
 
       setRotation(rotationRef.current);
