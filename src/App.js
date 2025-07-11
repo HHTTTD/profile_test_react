@@ -5,6 +5,7 @@ import { ChevronDown, Github, Linkedin, Mail, Phone, MapPin, Calendar, Award, Co
 import SplashCursor from './components/SplashCursor';
 import CreativeRotatingText from './components/CreativeRotatingText';
 import LetterGlitch from './components/LetterGlitch/LetterGlitch';
+import Ballpit from './components/Ballpit';
 import GradientText from './components/GradientText/GradientText';
 import ScrollFloat from './components/ScrollFloat/ScrollFloat';
 import LoadingScreen from './components/LoadingScreen';
@@ -1375,18 +1376,30 @@ const ProfileWebsite = () => {
 
       {/* Enhanced Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative">
-        {/* LetterGlitch Background */}
+        {/* Dynamic Background - Ballpit for Light Mode, LetterGlitch for Dark Mode */}
         <div className="absolute inset-0 z-0">
-          <LetterGlitch 
-            glitchColors={theme === 'dark' 
-              ? ["#1e293b", "#3730a3", "#7c3aed", "#059669"] 
-              : ["#0f172a", "#1e3a8a", "#6d28d9", "#059669", "#374151"]
-            }
-            glitchSpeed={30}
-            centerVignette={false}
-            outerVignette={true}
-            smooth={true}
-          />
+          {theme === 'light' ? (
+            <Ballpit 
+              className="w-full h-full"
+              followCursor={false}
+              count={200}
+              colors={[0x8b5cf6, 0x6366f1, 0x000000, 0xffffff, 0x6b7280]}  // Purple, Purple-Blue, Black, White, Gray
+              minSize={0.4}
+              maxSize={1.0}
+              gravity={0.4}
+              friction={0.997}
+              lightIntensity={0}
+              ambientIntensity={0.8}
+            />
+          ) : (
+            <LetterGlitch 
+              glitchColors={["#1e293b", "#3730a3", "#7c3aed", "#059669"]}
+              glitchSpeed={30}
+              centerVignette={false}
+              outerVignette={true}
+              smooth={true}
+            />
+          )}
         </div>
         
         <div className="text-center z-10 max-w-6xl mx-auto px-4 relative">
