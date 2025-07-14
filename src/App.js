@@ -716,124 +716,26 @@ const ThemeToggle = () => {
 };
 
 // 3D CSS Model as Reliable Fallback
-const CSS3DModel = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  return (
-    <div className="flex items-center justify-center w-full h-full">
-      {/* 3D CSS Laptop */}
-      <div 
-        className="relative cursor-pointer transform transition-transform duration-300 hover:scale-110" 
-        style={{ perspective: '1000px' }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div 
-          className="relative w-40 h-24"
-          style={{
-            transformStyle: 'preserve-3d',
-            animation: isHovered ? 'none' : 'rotate360 8s linear infinite',
-            transform: isHovered ? 'rotateY(20deg) rotateX(-10deg)' : 'none'
-          }}
-        >
-          {/* Laptop Screen */}
-          <div 
-            className="absolute w-40 h-24 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-gray-600 flex items-center justify-center shadow-xl"
-            style={{
-              transform: 'rotateX(-15deg) translateZ(3px)'
-            }}
-          >
-            {/* Screen Content */}
-            <div className={`w-36 h-20 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded flex items-center justify-center text-white text-sm font-bold transition-all duration-500 ${isHovered ? 'animate-pulse' : ''}`}>
-              <div className="text-center">
-                <div className="text-2xl mb-1">💻</div>
-                <div className="text-xs tracking-wider">FULL STACK</div>
-                <div className="text-xs opacity-75">DEVELOPER</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Laptop Base */}
-          <div 
-            className="absolute w-40 h-24 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg border border-gray-600 shadow-lg"
-            style={{
-              transform: 'rotateX(75deg) translateZ(-10px) translateY(12px)'
-            }}
-          >
-            {/* Keyboard */}
-            <div className="grid grid-cols-10 gap-1 p-3 h-full">
-              {[...Array(30)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`bg-gray-600 rounded-sm transition-all duration-300 ${
-                    isHovered ? 'bg-indigo-500 shadow-lg' : 'opacity-70'
-                  }`}
-                  style={{
-                    animationDelay: `${i * 50}ms`
-                  }}
-                ></div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Side Panel */}
-          <div 
-            className="absolute w-24 h-24 bg-gradient-to-b from-gray-800 to-gray-900 opacity-40 rounded"
-            style={{
-              transform: 'rotateY(90deg) translateZ(20px) translateX(-12px)'
-            }}
-          />
-          
-          {/* Light Reflection */}
-          <div 
-            className={`absolute w-40 h-24 bg-gradient-to-tr from-white to-transparent opacity-10 rounded-lg pointer-events-none transition-opacity duration-500 ${isHovered ? 'opacity-20' : ''}`}
-            style={{
-              transform: 'rotateX(-15deg) translateZ(4px)'
-            }}
-          />
-        </div>
-        
-        {/* Floating Particles */}
-        {isHovered && (
-          <div className="absolute inset-0 pointer-events-none">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-2 h-2 bg-indigo-400 rounded-full animate-ping opacity-75"
-                style={{
-                  left: `${20 + Math.random() * 60}%`,
-                  top: `${20 + Math.random() * 60}%`,
-                  animationDelay: `${i * 200}ms`,
-                  animationDuration: '1s'
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+
 
 // 3D Model Viewer with Your ToyCar Model
 const ModelViewerWithFallback = () => {
-  const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [modelUrl] = useState("/models/ToyCar.glb");
   const [viewerSize, setViewerSize] = useState({ width: 320, height: 320 });
 
   useEffect(() => {
-    // Set responsive size based on screen width
+    // Set responsive size based on screen width - optimized for circular frame
     const updateSize = () => {
       const screenWidth = window.innerWidth;
       if (screenWidth >= 768) {
-        // Desktop: 500x500
+        // Desktop: 500x500 (กรอบเท่าเดิม)
         setViewerSize({ width: 500, height: 500 });
       } else if (screenWidth >= 640) {
-        // Tablet: 384x384
+        // Tablet: 384x384 (กรอบเท่าเดิม)
         setViewerSize({ width: 384, height: 384 });
       } else {
-        // Mobile: 320x320
+        // Mobile: 320x320 (กรอบเท่าเดิม)
         setViewerSize({ width: 320, height: 320 });
       }
     };
@@ -843,66 +745,25 @@ const ModelViewerWithFallback = () => {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  useEffect(() => {
-    // Check if model file exists
-    fetch(modelUrl, { method: 'HEAD' })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Model file not found');
-        }
-        console.log('Model file found successfully');
-      })
-      .catch(error => {
-        console.error('Model file check failed:', error);
-        setHasError(true);
-        setIsLoading(false);
-      });
-
-    // Timeout fallback
-    const timer = setTimeout(() => {
-      if (isLoading) {
-        console.warn('Model loading timeout after 20 seconds - falling back to CSS 3D');
-        setHasError(true);
-        setIsLoading(false);
-      }
-    }, 20000); // Increase to 20 seconds for 5.8MB file
-
-    return () => clearTimeout(timer);
-  }, [modelUrl, isLoading]);
-
   const handleModelLoaded = () => {
     console.log('🚗 ToyCar model loaded successfully!');
     setIsLoading(false);
-    setHasError(false);
   };
 
   const handleError = (error) => {
     console.error('Model loading error:', error);
     setIsLoading(false);
-    setHasError(true);
   };
-
-  // Show CSS fallback if error
-  if (hasError) {
-    return (
-      <div className="text-center">
-        <CSS3DModel />
-        <div className="mt-2 text-xs text-gray-500">
-          CSS 3D Fallback (ToyCar.glb not loaded)
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="relative w-full h-full">
       {/* Loading State */}
       {isLoading && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent z-10">
-          <div className="text-4xl animate-spin mb-2">🚗</div>
-          <div className="text-sm text-gray-400 mb-1">Loading ToyCar...</div>
-          <div className="text-xs text-gray-500">5.8MB - Please wait 10-20 seconds</div>
-          <div className="mt-2 w-32 h-1 bg-gray-700 rounded overflow-hidden">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent z-10 rounded-full">
+          <div className="text-3xl animate-spin mb-2">🚗</div>
+          <div className="text-xs text-gray-400 mb-1 text-center">Loading ToyCar...</div>
+          <div className="text-xs text-gray-500 text-center">5.8MB - Please wait</div>
+          <div className="mt-2 w-24 h-1 bg-gray-700 rounded overflow-hidden">
             <div className="h-full bg-indigo-500 animate-pulse"></div>
           </div>
         </div>
@@ -914,6 +775,18 @@ const ModelViewerWithFallback = () => {
           url={modelUrl}
           width={viewerSize.width}
           height={viewerSize.height}
+          modelXOffset={0}
+          modelYOffset={0}
+          defaultZoom={1.2}
+          minZoomDistance={0.5}
+          maxZoomDistance={2.0}
+          autoFrame={true}
+          autoRotate={true}
+          autoRotateSpeed={0.3}
+          enableManualRotation={true}
+          enableManualZoom={true}
+          enableHoverRotation={true}
+          environmentPreset="warehouse"
           onModelLoaded={handleModelLoaded}
           onError={handleError}
         />
@@ -1876,9 +1749,11 @@ const ProfileWebsite = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-full animate-spin-slow" 
                      style={{ animation: 'spin 20s linear infinite' }} />
                 
-                {/* 3D Model Viewer with Error Handling */}
-                <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} rounded-full flex items-center justify-center overflow-hidden p-2`}>
-                  <ModelViewerWithFallback />
+                {/* 3D Model Viewer - Full circular frame */}
+                <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} rounded-full flex items-center justify-center p-2`}>
+                  <div className="w-full h-full rounded-full overflow-hidden">
+                    <ModelViewerWithFallback />
+                  </div>
                 </div>
                 
                 {/* Floating tech icons */}
