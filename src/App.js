@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback, createContext, useContext, Suspense } from 'react';
 import { ChevronDown, Github, Linkedin, Mail, Phone, MapPin, Calendar, Award, Code, Briefcase, Star, ExternalLink, Menu, X, ArrowRight, Volume2, VolumeX, Mouse, Zap, Coffee, Heart, Users, Target, Rocket, BookOpen, Trophy, Clock } from 'lucide-react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Environment } from '@react-three/drei';
 
 // Direct import - NO lazy loading for stability
 import SplashCursor from './components/SplashCursor';
@@ -15,7 +17,7 @@ import IconCloudDemo from './components/IconCloudDemo';
 import DecryptedText from './components/DecryptedText/DecryptedText';
 import TranslateSwitch from './components/translate_switch';
 import FluidEffectsActive from './components/Fluid_Effects_Active';
-import ModelViewer from './components/ModelViewer/ModelViewer';
+import InteractiveModel from './components/ModelViewer/InteractiveModel.jsx';
 
 // Theme Context
 const ThemeContext = createContext();
@@ -721,8 +723,7 @@ const ThemeToggle = () => {
 // 3D Model Viewer with Your ToyCar Model
 const ModelViewerWithFallback = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [modelUrl] = useState("/models/ToyCar.glb");
-  const [viewerSize, setViewerSize] = useState({ width: 320, height: 320 });
+  const [viewerSize, setViewerSize] = useState({ width: 400, height: 400 });
 
   useEffect(() => {
     // Set responsive size based on screen width - optimized for circular frame
@@ -746,12 +747,7 @@ const ModelViewerWithFallback = () => {
   }, []);
 
   const handleModelLoaded = () => {
-    console.log('🚗 ToyCar model loaded successfully!');
-    setIsLoading(false);
-  };
-
-  const handleError = (error) => {
-    console.error('Model loading error:', error);
+    console.log('🎨 Untitled model loaded successfully!');
     setIsLoading(false);
   };
 
@@ -760,36 +756,38 @@ const ModelViewerWithFallback = () => {
       {/* Loading State */}
       {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-transparent z-10 rounded-full">
-          <div className="text-3xl animate-spin mb-2">🚗</div>
-          <div className="text-xs text-gray-400 mb-1 text-center">Loading ToyCar...</div>
-          <div className="text-xs text-gray-500 text-center">5.8MB - Please wait</div>
+          <div className="text-3xl animate-spin mb-2">🎨</div>
+          <div className="text-xs text-gray-400 mb-1 text-center">Loading Untitled...</div>
+          <div className="text-xs text-gray-500 text-center">3D Model - Please wait</div>
           <div className="mt-2 w-24 h-1 bg-gray-700 rounded overflow-hidden">
             <div className="h-full bg-indigo-500 animate-pulse"></div>
           </div>
         </div>
       )}
       
-      {/* ModelViewer */}
+      {/* Three.js Canvas with InteractiveModel */}
       <div className={`w-full h-full transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        <ModelViewer
-          url={modelUrl}
-          width={viewerSize.width}
-          height={viewerSize.height}
-          modelXOffset={0}
-          modelYOffset={0}
-          defaultZoom={1.2}
-          minZoomDistance={0.5}
-          maxZoomDistance={2.0}
-          autoFrame={true}
-          autoRotate={true}
-          autoRotateSpeed={0.3}
-          enableManualRotation={true}
-          enableManualZoom={true}
-          enableHoverRotation={true}
-          environmentPreset="warehouse"
-          onModelLoaded={handleModelLoaded}
-          onError={handleError}
-        />
+        <Canvas
+          camera={{ position: [0, 0, 3], fov: 60 }}
+          style={{ width: viewerSize.width, height: viewerSize.height }}
+          onCreated={() => handleModelLoaded()}
+        >
+          <Suspense fallback={null}>
+            <InteractiveModel />
+            <OrbitControls 
+              enablePan={false}
+              enableZoom={true}
+              enableRotate={true}
+              autoRotate={true}
+              autoRotateSpeed={0.3}
+              minDistance={1.5}
+              maxDistance={6}
+            />
+            <Environment preset="warehouse" />
+            <ambientLight intensity={0.6} />
+            <directionalLight position={[1, 1, 1]} intensity={0.8} />
+          </Suspense>
+        </Canvas>
       </div>
     </div>
   );
