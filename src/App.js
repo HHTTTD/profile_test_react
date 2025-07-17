@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, createContext, useCont
 import { ChevronDown, Github, Linkedin, Mail, Phone, MapPin, Calendar, Award, Code, Briefcase, Star, ExternalLink, Menu, X, ArrowRight, Volume2, VolumeX, Mouse, Zap, Coffee, Heart, Users, Target, Rocket, BookOpen, Trophy, Clock } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
+import * as THREE from 'three';
 
 // Direct import - NO lazy loading for stability
 import SplashCursor from './components/SplashCursor';
@@ -775,13 +776,25 @@ const ModelViewerWithFallback = () => {
           <Suspense fallback={null}>
             <InteractiveModel />
             <OrbitControls 
-              enablePan={false}
+              enablePan={true}
               enableZoom={true}
               enableRotate={true}
               autoRotate={true}
               autoRotateSpeed={0.3}
               minDistance={1.5}
               maxDistance={6}
+              panSpeed={0.5}
+              zoomSpeed={0.5}
+              rotateSpeed={0.5}
+              mouseButtons={{
+                LEFT: THREE.MOUSE.ROTATE,
+                MIDDLE: THREE.MOUSE.DOLLY,
+                RIGHT: THREE.MOUSE.PAN
+              }}
+              touches={{
+                ONE: THREE.TOUCH.ROTATE,
+                TWO: THREE.TOUCH.DOLLY_PAN
+              }}
             />
             <Environment preset="warehouse" />
             <ambientLight intensity={0.6} />
@@ -1770,6 +1783,50 @@ const ProfileWebsite = () => {
                   </div>
                 ))}
               </div>
+              {/* Hint Controls - Outside the circular frame */}
+      <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 z-20 group">
+        <div className="flex items-center justify-center p-1.5 rounded-[10px] border-[0.5px] border-gray-600 bg-gray-800/95 shadow-md transition-all duration-300 ease-in-out overflow-hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="size-4 text-blue-400 flex-shrink-0">
+            <path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"></path>
+            <path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z"></path>
+            <path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"></path>
+            <path d="M4.893 4.893a1 1 0 0 1 1.32 -.083l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 0 -1.414z"></path>
+            <path d="M17.693 4.893a1 1 0 0 1 1.497 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7z"></path>
+            <path d="M14 18a1 1 0 0 1 1 1a3 3 0 0 1 -6 0a1 1 0 0 1 .883 -.993l.117 -.007h4z"></path>
+            <path d="M12 6a6 6 0 0 1 3.6 10.8a1 1 0 0 1 -.471 .192l-.129 .008h-6a1 1 0 0 1 -.6 -.2a6 6 0 0 1 3.6 -10.8z"></path>
+          </svg>
+          <div className="w-0 group-hover:w-auto group-hover:ml-3 transition-all duration-300 ease-in-out overflow-hidden">
+            <div className="flex select-none items-center">
+              <div className="px-4">
+                <div className="h-4 w-1 rounded-[2px] bg-gray-600"></div>
+              </div>
+              <div className="flex items-center gap-x-6">
+                <div className="flex items-center gap-x-2">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-400">
+                    <rect x="2.5" y="0.5" width="15" height="19" rx="7.5" fill="#303030" stroke="#4F4F4F"></rect>
+                    <path d="M5 6.84A3.84 3.84 0 0 1 8.84 3a.16.16 0 0 1 .16.16V6.4c0 .56 0 .84-.109 1.054a1 1 0 0 1-.437.437C8.24 8 7.96 8 7.4 8H5.2a.2.2 0 0 1-.2-.2v-.96Z" fill="currentColor"></path>
+                  </svg>
+                  <span className="whitespace-nowrap text-xs font-medium text-gray-300">หมุน</span>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-400">
+                    <rect x="2.5" y="0.5" width="15" height="19" rx="7.5" fill="#303030" stroke="#4F4F4F"></rect>
+                    <rect x="9" y="4" width="2" height="5" rx="1" fill="currentColor"></rect>
+                  </svg>
+                  <span className="whitespace-nowrap text-xs font-medium text-gray-300">ซูม</span>
+                </div>
+                <div className="flex items-center gap-x-2">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-400">
+                    <path d="M17.5 8a7.5 7.5 0 0 0-15 0v4a7.5 7.5 0 0 0 15 0V8Z" fill="#303030" stroke="#4F4F4F"></path>
+                    <path d="M15 6.84A3.84 3.84 0 0 0 11.16 3a.16.16 0 0 0-.16.16V6.4c0 .56 0 .84.109 1.054a1 1 0 0 0 .437.437C11.76 8 12.04 8 12.6 8h2.2a.2.2 0 0 0 .2-.2v-.96Z" fill="currentColor"></path>
+                  </svg>
+                  <span className="whitespace-nowrap text-xs font-medium text-gray-300">แพน</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
             </div>
           </div>
         </div>
